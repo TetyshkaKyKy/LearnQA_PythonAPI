@@ -16,5 +16,5 @@ for pas in password_list:
     cookies = {"auth_cookie": cookie_value}
     check_cookie_response = requests.get("https://playground.learnqa.ru/api/check_auth_cookie", cookies=cookies)
     if check_cookie_response.text != "You are NOT authorized":
-        print(f'{check_cookie_response.text}! Correct password is: {pas}')
+        print(f'{check_cookie_response.text}! The correct password is: {pas}')
         break

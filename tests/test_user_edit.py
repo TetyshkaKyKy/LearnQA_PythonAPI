@@ -1,8 +1,10 @@
+import allure
 from lib.my_requests import MyRequests
 from lib.base_case import BaseCase
 from lib.assertions import Assertions
 
 
+@allure.epic("Edit cases")
 class TestUserEdit(BaseCase):
     # Register & auth of main user
     def setup(self):
@@ -26,6 +28,7 @@ class TestUserEdit(BaseCase):
         self.auth_sid = self.get_cookie(response2, "auth_sid")
         self.token = self.get_header(response2, "x-csrf-token")
 
+    @allure.description("This test edits user details")
     def test_edit_just_created_user(self):
         new_name = "Changed Name"
         # Edit just created user's name
@@ -50,6 +53,7 @@ class TestUserEdit(BaseCase):
             "Wrong name of the user after edit"
         )
 
+    @allure.description("This test attempts to edit user details by unauthorized user")
     def test_edit_unauthorized_user(self):
         new_name = "Changed Name Again"
 
@@ -59,6 +63,7 @@ class TestUserEdit(BaseCase):
         Assertions.assert_code_status(response, 400)
         Assertions.assert_content(response, "Auth token not supplied")
 
+    @allure.description("This test attempts to edit one user by another user")
     def test_edit_one_user_by_another(self):
         # Register 2nd user
         second_user_data = self.prepare_registration_data()
@@ -90,6 +95,7 @@ class TestUserEdit(BaseCase):
             "Oops!Username was edit by first user!"
         )
 
+    @allure.description("This test attempts to edit user email with incorrect data")
     def test_edit_user_with_incorrect_email(self):
         incorrect_email = "exampleexample.com"
         response = MyRequests.put(f"/user/{self.user_id}",
@@ -100,6 +106,7 @@ class TestUserEdit(BaseCase):
         Assertions.assert_code_status(response, 400)
         Assertions.assert_content(response, "Invalid email format")
 
+    @allure.description("This test attempts to edit user firstName with incorrect data")
     def test_edit_user_first_name_contains_one_symbol(self):
         new_first_name = 'l'
         response = MyRequests.put(f"/user/{self.user_id}",

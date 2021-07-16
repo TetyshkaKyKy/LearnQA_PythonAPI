@@ -4,10 +4,12 @@ from lib.assertions import Assertions
 import pytest
 from random import choice
 from string import ascii_uppercase
+import allure
 
 
+@allure.epic("Creation cases")
 class TestUserRegister(BaseCase):
-
+    @allure.description("This test successfully creates user")
     def test_create_user_successfully(self):
         data = self.prepare_registration_data()
 
@@ -16,6 +18,7 @@ class TestUserRegister(BaseCase):
         Assertions.assert_code_status(response, 200)
         Assertions.assert_json_has_key(response, "id")
 
+    @allure.description("This test attempts to create user with existing email")
     def test_create_user_with_existing_email(self):
         email = 'vinkotov@example.com'
         data = self.prepare_registration_data(email)
@@ -24,6 +27,7 @@ class TestUserRegister(BaseCase):
         Assertions.assert_code_status(response, 400)
         Assertions.assert_content(response, f"Users with email '{email}' already exists")
 
+    @allure.description("This test attempts to create user with incorrect email")
     def test_create_user_with_incorrect_email(self):
         email = 'vinkotovexample.com'
         data = self.prepare_registration_data(email)
@@ -44,6 +48,7 @@ class TestUserRegister(BaseCase):
         ({'password': '123', 'username': 'learnqa', 'firstName': 'learnqa', 'lastName': 'learnqa'}, 'email')
     ]
 
+    @allure.description("This test attempts to create user without one expected param")
     @pytest.mark.parametrize("data", data_for_registration_wo_one_param)
     def test_create_user_wo_one_param(self, data):
         data, missed_param = data
@@ -52,6 +57,7 @@ class TestUserRegister(BaseCase):
         Assertions.assert_code_status(response, 400)
         Assertions.assert_content(response, f"The following required params are missed: {missed_param}")
 
+    @allure.description("This test attempts to create user with one symbol in firstName")
     def test_create_user_with_one_symbol_firstName(self):
         data = {
             'password': '123',
@@ -65,6 +71,7 @@ class TestUserRegister(BaseCase):
         Assertions.assert_code_status(response, 400)
         Assertions.assert_content(response, "The value of 'firstName' field is too short")
 
+    @allure.description("This test attempts to create user with too long firstName")
     def test_create_user_with_too_long_firstName(self):
         data = {
             'password': '123',
